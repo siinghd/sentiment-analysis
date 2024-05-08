@@ -54,6 +54,9 @@ services:
       db:
         condition: service_healthy
     environment:
+      OPENAI_API_KEY: OPENAI KEY here # add your OpenAI API key here
+      DJANGO_SECRET_KEY: 'django-insecure-zjw#rsmbl18_uy!@6_1j+^jq_(#bse6g2k)&rkg-z2#ha4+8yf' # Change this for production
+      DEBUG: 'false' # default false
       DB_NAME: sentiment_db
       DB_USER: sentiment_user
       DB_PASSWORD: sentiment_password
