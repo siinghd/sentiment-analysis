@@ -89,6 +89,10 @@ DATABASES = {
         'PASSWORD': get_env_variable('DB_PASSWORD'),
         'HOST': get_env_variable('DB_HOST'),
         'PORT': get_env_variable('DB_PORT'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'use_unicode': True, 
+        },
     }
 }
 # pymysql.version_info = (1, 4, 2, "final", 0)
