@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:latest
+    container_name: sentiment_db
+    environment:
+      MYSQL_DATABASE: sentiment_db
+      MYSQL_USER: sentiment_user
+      MYSQL_PASSWORD: sentiment_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - sentiment_data:/var/lib/mysql
+    ports:
+      - '3306:3306' # change the binding port if needed, might 3306 is already in use
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - sentiment_network
+
+  web:
+    build: .
+    container_name: sentiment_web
+    command: gunicorn sentiment_analysis_project.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - '8000:8000' # change the binding port if needed
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      OPENAI_API_KEY: OPENAI KEY here # add your OpenAI API key here
+      DJANGO_SECRET_KEY: 'django-insecure-zjw#rsmbl18_uy!@6_1j+^jq_(#bse6g2k)&rkg-z2#ha4+8yf' # Change this for production
+      DB_NAME: sentiment_db
+      DB_USER: sentiment_user
+      DB_PASSWORD: sentiment_password
+      DEBUG: 'false' # default false
+      DB_HOST: db
+      DB_PORT: 3306
+    networks:
+      - sentiment_network
+
+  migrate:
+    build: .
+    command: python manage.py migrate
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_NAME: sentiment_db
+      DB_USER: sentiment_user
+      DB_PASSWORD: sentiment_password
+      DB_HOST: db
+      DB_PORT: 3306
+    networks:
+      - sentiment_network
+
+volumes:
+  sentiment_data:
+
+networks:
+  sentiment_network:
+    driver: bridge

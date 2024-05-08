@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentiment Analysis</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="text-center">Sentiment Analysis</h1>
+      <div class="row mt-4">
+        <div class="col-md-6 offset-md-3">
+          <div class="card">
+            <div class="card-body">
+              <form id="sentiment-form">
+                <div class="form-group">
+                  <label for="text-input">Enter Text:</label>
+                  <textarea
+                    class="form-control"
+                    id="text-input"
+                    rows="5"
+                    required
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-block"
+                  id="analyze-btn"
+                >
+                  <span id="analyze-text">Analyze Sentiment</span>
+                  <span
+                    id="loading-spinner"
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                    style="display: none"
+                  ></span>
+                </button>
+              </form>
+              <div id="result-container" class="mt-4" style="display: none">
+                <h5>Sentiment Analysis Result:</h5>
+                <div id="result" class="card p-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const sentimentForm = document.getElementById('sentiment-form');
+        const resultContainer = document.getElementById('result-container');
+        const resultDiv = document.getElementById('result');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const analyzeText = document.getElementById('analyze-text');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const converter = new showdown.Converter();
+
+        sentimentForm.addEventListener('submit', async function (event) {
+          event.preventDefault();
+          const text = document.getElementById('text-input').value;
+
+          analyzeBtn.disabled = true;
+          analyzeText.style.display = 'none';
+          loadingSpinner.style.display = 'inline-block';
+
+          try {
+            const response = await fetch('/api/sentiment-analysis', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ text: text }),
+            });
+            if (!response.ok) {
+              alert(response.statusText);
+              return;
+            }
+            const data = await response.json();
+            const markdown = data.sentiment;
+            const html = converter.makeHtml(markdown);
+            resultDiv.innerHTML = html;
+            resultContainer.style.display = 'block';
+          } catch (error) {
+            console.error(error);
+            alert('An error occurred while analyzing sentiment.');
+          } finally {
+            analyzeBtn.disabled = false;
+            analyzeText.style.display = 'inline';
+            loadingSpinner.style.display = 'none';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
