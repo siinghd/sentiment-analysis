@@ -2,17 +2,18 @@
 
 This project is a sentiment analysis web service built with Django, MySQL, and OpenAI GPT-3.5. It allows users to input text and receive real-time sentiment analysis results.
 
-## Demo
+## 🌟 Demo
 
-https://sa.hsingh.site/
+Check out the live demo: [https://sa.hsingh.site/](https://sa.hsingh.site/)
 
-## Prerequisites
+## 📋 Prerequisites
 
 - Docker
 - Docker Compose
 
-## Installation
+## 🚀 Installation
 
+### 🐳 Docker
 1. Clone the repository:
 
    ```bash
@@ -36,13 +37,81 @@ https://sa.hsingh.site/
    This will start the following services:
    - `db`: MySQL database container
    - `web`: Django web application container
-   - `migrate`: Container to run database migrations (run and exist)
+   - `migrate`: Container to run database migrations (run and exit)
 
 5. Access the web application:
 
    Open your web browser and visit `http://localhost:8000` to access the sentiment analysis web service.
 
-<h2 id="configuration">Configuration</h2>
+
+### 🖥️ Non-Docker Setup
+
+If you prefer to run the application without using Docker, follow these steps:
+
+#### Prerequisites
+
+- Python 3.8 or higher
+- MySQL Server
+- Pip (Python package installer)
+
+#### Installation
+
+1. **Set up the MySQL Database:**
+
+   - Install MySQL on your machine.
+   - Create a new database and user for the application.
+   - Grant all privileges on your database to the new user.
+
+2. **Clone the repository and enter the directory:**
+
+   ```bash
+   git clone https://github.com/siinghd/sentiment-analysis.git
+   cd sentiment-analysis
+   ```
+
+3. **Install Python dependencies:**
+
+   - Ensure `pip` is installed and then run:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Configure the application:**
+
+   - Copy the example environment configuration file and modify it with your settings:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   - Open the `.env` file and update it with your database credentials and other environment variables such as `OPENAI_API_KEY` and `DJANGO_SECRET_KEY`.
+
+5. **Perform database migrations:**
+
+   ```bash
+   python manage.py migrate
+   ```
+
+6. **Run the Django development server:**
+
+   ```bash
+   python manage.py runserver # or pip install gunicorn and run :  gunicorn sentiment_analysis_project.wsgi:application --bind 127.0.0.1:8000
+   ```
+
+   This will start the server on `http://localhost:8000`.
+
+7. **Access the web application:**
+
+   - Open your web browser and visit `http://localhost:8000` to access the sentiment analysis web service.
+
+#### ℹ️ Additional Notes:
+
+- Ensure that your Python environment is correctly set up and that all dependencies listed in `requirements.txt` are installed without errors.
+- Make sure your MySQL service is running and accessible by the Django application.
+- Adjust the `.env` file as necessary to ensure all environment variables are correctly set for your development environment.
+
+<h2 id="configuration">⚙️ Configuration</h2>
 
 The project uses environment variables for configuration. You can modify the following variables in the `docker-compose.yml` file:
 
@@ -53,28 +122,29 @@ The project uses environment variables for configuration. You can modify the fol
 - `DB_PASSWORD`: MySQL database password.
 - `DB_HOST`: MySQL database host (set to `db` for Docker Compose setup).
 - `DB_PORT`: MySQL database port.
-- `DUBUG`: Django DEBUG flag, default: `false`.
+- `DEBUG`: Django DEBUG flag, default: `false`.
 
-## Usage
+<h2 id="usage">📖 Usage</h2>
 
 1. Open your web browser and visit `http://localhost:8000`.
 2. Enter the text you want to analyze in the provided input field.
 3. Click the "Analyze Sentiment" button.
 4. The sentiment analysis result will be displayed on the page.
 
-## Project Structure
+## 🏗️ Project Structure
 
 The project has the following structure:
 
 - `api/`: Django app containing the API views, models, serializers, and exceptions.
 - `sentiment_analysis_project/`: Django project configuration files.
 - `templates/`: HTML templates directory.
+- `utils/`: Useful utilities
 - `Dockerfile`: Dockerfile for building the web application container.
 - `docker-compose.yml`: Docker Compose configuration file.
 - `manage.py`: Django management script.
 - `requirements.txt`: Python dependencies file.
 
-## Dependencies
+## 📦 Dependencies
 
 The project uses the following main dependencies:
 
@@ -86,16 +156,16 @@ The project uses the following main dependencies:
 
 For a complete list of dependencies, refer to the `requirements.txt` file.
 
-## AWS Deployment
-For small projects, I think using other hosting services like Hetzner might be more cost effective. 
-But if I'm choosing AWS, here is what i would use:
+## ☁️ AWS Deployment
+For small projects, using other hosting services like Hetzner might be more cost-effective.
+But if choosing AWS, here are some recommended services:
 
-- `Amazon EKS`: I'll use EKS for managing Kubernetes containers. It's a scalable and secure environment.
-- `Amazon ECR`: I'll use ECR for storing my Docker images in a fully managed registry.
-- `Amazon RDS`: I'll use RDS for databases. It makes setting up and scaling databases easier.
-- `AWS Elastic Beanstalk`: I can deploy my apps quickly on Beanstalk without having to manage lots of hosting stuff myself.
-- `Amazon EC2`: I'll run my app on EC2 virtual servers with configs I pick.
+- `Amazon EKS`: Use EKS for managing Kubernetes containers. It's a scalable and secure environment.
+- `Amazon ECR`: Store Docker images in a fully managed registry using ECR.
+- `Amazon RDS`: Use RDS for databases. It makes setting up and scaling databases easier.
+- `AWS Elastic Beanstalk`: Deploy apps quickly on Beanstalk without having to manage lots of hosting stuff manually.
+- `Amazon EC2`: Run the app on EC2 virtual servers with customizable configurations.
 
-_*Scaling & Load Balancing*_:
+### 🚀 Scaling & Load Balancing
 
-`Elastic Load Balancing (ELB)`: I'll use ELB with Auto Scaling Groups to efficiently distribute traffic across multiple servers like EC2 instances. It can automatically scale resources based on demand.
+`Elastic Load Balancing (ELB)`: Use ELB with Auto Scaling Groups to efficiently distribute traffic across multiple servers like EC2 instances. It can automatically scale resources based on demand.

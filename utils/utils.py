@@ -1,6 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 import os
 
+# This function is used to get environment variables
 def get_env_variable(var_name, default=None):
     try:
         return os.environ[var_name]

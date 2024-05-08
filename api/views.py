@@ -14,7 +14,7 @@ from utils.constants import ENGINE
 
 client = OpenAI(api_key=get_env_variable("OPENAI_API_KEY"))
 
-
+# rate limit the sentiment analysis endpoint
 class SentimentAnalysisThrottle(UserRateThrottle):
     rate = '100/minute'
     
@@ -22,6 +22,7 @@ class SentimentAnalysisView(APIView):
     throttle_classes = [SentimentAnalysisThrottle]
 
     def post(self, request):
+        # validate the request data
         serializer = SentimentAnalysisSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -29,6 +30,7 @@ class SentimentAnalysisView(APIView):
         text = serializer.validated_data['text']
         instance, created = SentimentAnalysis.get_or_create(text)
 
+        # if the sentiment is already analyzed, return the result
         if not created and instance.sentiment:
             return Response({'sentiment': instance.sentiment})
 
