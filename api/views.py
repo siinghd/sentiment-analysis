@@ -35,10 +35,50 @@ class SentimentAnalysisView(APIView):
             return Response({'sentiment': instance.sentiment})
 
         messages = [
-            {"role": "system", "content": "You will be asked to analyze the sentiment of a text. Please provide your analysis in a structured format using Markdown as specified below."},
-            {"role": "user", "content": text},
-            {"role": "system", "content": "Please summarize the key points regarding the sentiment of the text in a bullet point list. Include the overall sentiment (Positive, Negative, or Neutral with points), specific phrases or overall tone that led to this conclusion, specific emotions or reactions identified, and any additional relevant sentiment details. "}
+                {
+                    "role": "system",
+                    "content": """
+            You will be asked to analyze the sentiment of a text. Please provide your analysis in a structured format using Markdown as specified below:
+            - **Overall Sentiment**: **Positive** (Score: `0.85`)
+            - **Key Phrases**:
+                - ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) "enjoyed the service" (Positive)
+                - ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) "will recommend to others" (Positive)
+            - **Specific Emotions**:
+                - **Happiness**: "enjoyed"
+                - **Satisfaction**: "recommend"
+            - **Additional Details**:
+                - The text displays a consistently positive tone, particularly emphasizing satisfaction and happiness.
+                    """
+                },
+                {"role": "user", "content": text},
+                {
+                    "role": "system",
+                    "content": """
+            Please summarize the key points regarding the sentiment of the text in a bullet point list using Markdown. Make sure to include the following elements:
+            - **Overall Sentiment**: Indicate the sentiment as **Positive**, **Negative**, or **Neutral** along with the sentiment score (e.g., Score: `0.75`).
+            - **Key Phrases**: Highlight specific phrases that contribute to the sentiment. Use colored indicators for emphasis:
+                - Positive phrases in green: ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) "example positive phrase"
+                - Negative phrases in red: ![#FF0000](https://via.placeholder.com/15/FF0000/000000?text=+) "example negative phrase"
+                - Neutral phrases in yellow: ![#FFFF00](https://via.placeholder.com/15/FFFF00/000000?text=+) "example neutral phrase"
+            - **Specific Emotions**: Identify specific emotions or reactions mentioned in the text with examples.
+            - **Additional Details**: Any other relevant sentiment details that provide more context or insight.
+            
+            Here's an example of the expected format:
+            
+            ```markdown
+            - **Overall Sentiment**: **Positive** (Score: `0.85`)
+            - **Key Phrases**:
+                - ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) "enjoyed the service" (Positive)
+                - ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) "will recommend to others" (Positive)
+            - **Specific Emotions**:
+                - **Happiness**: "enjoyed"
+                - **Satisfaction**: "recommend"
+            - **Additional Details**:
+                - The text displays a consistently positive tone, particularly emphasizing satisfaction and happiness.
+            """
+            }
         ]
+
 
         try:
             response = client.chat.completions.create(
