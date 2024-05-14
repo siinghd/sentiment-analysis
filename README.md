@@ -25,13 +25,13 @@ Check out the live demo: [https://sa.hsingh.site/](https://sa.hsingh.site/)
 3. Build the Docker containers:
 
    ```bash
-   docker-compose build
+   docker-compose build # or docker compose build
    ```
 
 4. Start the containers:
 
    ```bash
-   docker-compose up
+   docker-compose up # or docker compose up
    ```
 
    This will start the following services:
