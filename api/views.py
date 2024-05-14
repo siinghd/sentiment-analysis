@@ -35,50 +35,67 @@ class SentimentAnalysisView(APIView):
             return Response({'sentiment': instance.sentiment})
 
         messages = [
-                {
-                    "role": "system",
-                    "content": """
-            You will be asked to analyze the sentiment of a text. Please provide your analysis in a structured format using Markdown as specified below:
-            - **Overall Sentiment**: **Positive** (Score: `0.85`)
-            - **Key Phrases**:
-                - ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) "enjoyed the service" (Positive)
-                - ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) "will recommend to others" (Positive)
-            - **Specific Emotions**:
-                - **Happiness**: "enjoyed"
-                - **Satisfaction**: "recommend"
-            - **Additional Details**:
-                - The text displays a consistently positive tone, particularly emphasizing satisfaction and happiness.
-                    """
-                },
-                {"role": "user", "content": text},
-                {
-                    "role": "system",
-                    "content": """
-            Please summarize the key points regarding the sentiment of the text in a bullet point list using Markdown. Make sure to include the following elements:
-            - **Overall Sentiment**: Indicate the sentiment as **Positive**, **Negative**, or **Neutral** along with the sentiment score (e.g., Score: `0.75`).
-            - **Key Phrases**: Highlight specific phrases that contribute to the sentiment. Use colored indicators for emphasis:
-                - Positive phrases in green: ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) "example positive phrase"
-                - Negative phrases in red: ![#FF0000](https://via.placeholder.com/15/FF0000/000000?text=+) "example negative phrase"
-                - Neutral phrases in yellow: ![#FFFF00](https://via.placeholder.com/15/FFFF00/000000?text=+) "example neutral phrase"
-            - **Specific Emotions**: Identify specific emotions or reactions mentioned in the text with examples.
-            - **Additional Details**: Any other relevant sentiment details that provide more context or insight.
-            
-            Here's an example of the expected format:
-            
-            ```markdown
-            - **Overall Sentiment**: **Positive** (Score: `0.85`)
-            - **Key Phrases**:
-                - ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) "enjoyed the service" (Positive)
-                - ![#00FF00](https://via.placeholder.com/15/00FF00/000000?text=+) "will recommend to others" (Positive)
-            - **Specific Emotions**:
-                - **Happiness**: "enjoyed"
-                - **Satisfaction**: "recommend"
-            - **Additional Details**:
-                - The text displays a consistently positive tone, particularly emphasizing satisfaction and happiness.
-            """
+            {
+                "role": "system",
+                "content": "You will be asked to analyze the sentiment of a text. Please provide your analysis in a structured format using HTML. The template below is provided as a starting point, but you must improve and enhance it to deliver a more comprehensive and insightful sentiment analysis."
+            },
+            {
+                "role": "user",
+                "content": text
+            },
+            {
+                "role": "system",
+                "content": """
+        Please provide a sentiment analysis of the text, including the following:
+
+        <ol>
+        <li>Overall Sentiment:
+            <ul>
+            <li>Score: (integer from -5 to 5, where -5 is extremely negative, 0 is neutral, and 5 is extremely positive)</li>
+            <li>Label: (Positive, Negative, or Neutral)</li>
+            <li>Explanation: (brief explanation of the overall sentiment)</li>
+            </ul>
+        </li>
+        <li>Key Phrases and Their Sentiments:
+            <ul>
+            <li><span style="background-color: (color code for the sentiment)">Phrase 1: (relevant phrase from the text)</span>
+                <ul>
+                <li>Sentiment: (Positive, Negative, or Neutral)</li>
+                </ul>
+            </li>
+            <li><span style="background-color: (color code for the sentiment)">Phrase 2: (relevant phrase from the text)</span>
+                <ul>
+                <li>Sentiment: (Positive, Negative, or Neutral)</li>
+                </ul>
+            </li>
+            ...
+            </ul>
+        </li>
+        <li>Specific Emotions or Reactions Identified:
+            <ul>
+            <li>Emotion 1: (identified emotion or reaction)</li>
+            <li>Emotion 2: (identified emotion or reaction)</li>
+            ...
+            </ul>
+        </li>
+        <li>Additional Sentiment Details:
+            <ul>
+            <li>Detail 1: (any additional relevant sentiment details)</li>
+            <li>Detail 2: (any additional relevant sentiment details)</li>
+            ...
+            </ul>
+        </li>
+       
+        </ol>
+
+        The template above is provided as a starting point, but it is crucial that you improve and enhance it to deliver a more comprehensive and insightful sentiment analysis. You must modify the structure, add or remove sections, and include any additional information or insights that you think would be valuable for the sentiment analysis.
+
+        Please format your response using HTML, including the appropriate tags for ordered lists, unordered lists, and list items. Apply the color to the background of the phrases using the <span> tag with the style attribute.
+
+        Remember, improving and enhancing the template is a requirement, not just a suggestion. Use your intelligence, creativity, and expertise to provide the best possible sentiment analysis.
+        """
             }
         ]
-
 
         try:
             response = client.chat.completions.create(
